@@ -11,3 +11,7 @@ website login
 
 # rekomendasi browser
 -crome
+
+#notes
+maaf jika codingan susah di baca karna waktu gak cukup buat refactoring
+styling juga gak keburu
