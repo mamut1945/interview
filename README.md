@@ -2,7 +2,7 @@
 
 website login
 
-#fitur
+# fitur
 -login
 -register
 -swicth akun
@@ -12,6 +12,6 @@ website login
 # rekomendasi browser
 -crome
 
-#notes
+# notes
 maaf jika codingan susah di baca karna waktu gak cukup buat refactoring
 styling juga gak keburu
