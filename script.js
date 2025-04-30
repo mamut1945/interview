@@ -23,6 +23,8 @@ const regText = document.querySelector(".reg-text");
 const buttonReg = document.querySelector(".loading1");
 const logText = document.querySelector(".log-text");
 const buttonLogin = document.querySelector(".loading2");
+const btnUserSetting = document.querySelector(".user-setting");
+
 
 btnTambahAkunBaru.addEventListener("click", function () {
   tampilSembunyikan([mainLogin], [mainRegister], [mainRegister.parentElement]);
@@ -51,11 +53,8 @@ function tampilSembunyikan(
   });
 }
 
-const btnUserSetting = document.querySelector(".user-setting");
-
 let users = JSON.parse(localStorage.getItem("users")) || [];
-
-let userNow = undefined;
+let userInUse = undefined;
 
 cekUser();
 ///////////////////////   REGISTER  /////////////////////////////////
@@ -69,13 +68,13 @@ btnReg.addEventListener("click", function () {
 
 //_________________create akun_____________________//
 btnRegSub.addEventListener("click", function () {
-  const sassknknk = [
+  const allValidate = [
     validation(inputpasswordReg, 50, 8, true),
     validation(inputemailReg, 20, 4, true),
     validation(inputNameReg, 16, 4, true),
   ];
 
-  if (sassknknk.every((e) => e === true)) {
+  if (allValidate.every((e) => e === true)) {
   } else {
     return;
   }
@@ -90,23 +89,23 @@ btnRegSub.addEventListener("click", function () {
 
 //________________Delete akun________________________//
 btnDelete.addEventListener("click", function () {
-  const sasa = JSON.parse(localStorage.getItem("userNow"));
+  const getUserInUse = JSON.parse(localStorage.getItem("userNow"));
   const buttonCek = document.querySelector(".loading3");
   loading("", buttonCek);
   setTimeout(() => {
-    register("delete", sasa.username, sasa.email, sasa.password);
+    register("delete", getUserInUse.username, getUserInUse.email, getUserInUse.password);
     cekUser();
   }, 2000);
 });
 
 function register(action, username, email, password) {
-  const assasaas = JSON.parse(localStorage.getItem("users"));
+  const getUsersData = JSON.parse(localStorage.getItem("users"));
   switch (action) {
     case "create":
-      const asas = assasaas?.find((e) => {
+      const getUsersDataLikeInput = getUsersData?.find((e) => {
         return e.email === email;
       });
-      if (asas?.email === email) {
+      if (getUsersDataLikeInput?.email === email) {
         message("email sudah di pakai");
         messageElement.forEach((e) => {
           tampilSembunyikan([], [e.parentElement], [], []);
@@ -141,18 +140,17 @@ function register(action, username, email, password) {
     case "edit":
       break;
     case "delete":
-      const sasasah = JSON.parse(localStorage.getItem("users"));
-      const sassasasah = JSON.parse(localStorage.getItem("userNow"));
-      const userNewAfterDelUser = sasasah.filter(
-        (e) => e.username !== sassasasah.username
+      const getUserInUse = JSON.parse(localStorage.getItem("userNow"));
+      const usersNewAfterDelUser = getUsersData.filter(
+        (e) => e.username !== getUserInUse.username
       );
-      users = userNewAfterDelUser;
-      localStorage.setItem("users", JSON.stringify(userNewAfterDelUser));
-      if (userNewAfterDelUser.length === 0) {
+      users = usersNewAfterDelUser;
+      localStorage.setItem("users", JSON.stringify(usersNewAfterDelUser));
+      if (usersNewAfterDelUser.length === 0) {
         localStorage.setItem("userNow", JSON.stringify(undefined));
         tampilSembunyikan([mainRegister.parentElement], [], [], []);
       } else {
-        localStorage.setItem("userNow", JSON.stringify(userNewAfterDelUser[0]));
+        localStorage.setItem("userNow", JSON.stringify(usersNewAfterDelUser[0]));
         pesanErrSucc(`akun berhasil di hapus `, "80px", "");
       }
 
@@ -173,12 +171,13 @@ btnLogin.addEventListener("click", function () {
   });
   clear(inputemailLogin, inputpasswordLogin);
 });
+
 btnLoginSub.addEventListener("click", function () {
-  const sassknknk = [
+  const allValidate = [
     validation(inputpasswordLogin, 100, 0, true),
     validation(inputemailLogin, 100, 0, true),
   ];
-  if (sassknknk.every((e) => e === true)) {
+  if (allValidate.every((e) => e === true)) {
   } else {
     return;
   }
@@ -189,13 +188,13 @@ btnLoginSub.addEventListener("click", function () {
 });
 
 function login(email, password) {
-  const assasaas = JSON.parse(localStorage.getItem("users"));
-  const asas = assasaas.find((e) => {
+  const getUsersData = JSON.parse(localStorage.getItem("users"));
+  const getUsersDataLikeInput = getUsersData.find((e) => {
     return e.email === email && e.password === password;
   });
   loading(logText, buttonLogin);
-  if (asas) {
-    userNow = asas;
+  if (getUsersDataLikeInput) {
+    userNow = getUsersDataLikeInput;
     localStorage.setItem("userNow", JSON.stringify(userNow));
     setTimeout(() => {
       pesanErrSucc("berhasil Login", "90px", "");
@@ -264,14 +263,14 @@ function validation(input, maxchar = 100, minchar = 0) {
 ///////////////////////   AKUN USER YANG DI PAKAI  /////////////////////////////////
 
 function cekUser() {
-  const assasaas = localStorage.getItem("userNow");
-  const ssssas = JSON.parse(localStorage.getItem("users"));
+  const getUserInUse = localStorage.getItem("userNow");
+  const getUsersData = JSON.parse(localStorage.getItem("users"));
 
   if (
-    assasaas == undefined ||
-    assasaas == null ||
-    assasaas == "undefined" ||
-    assasaas == "null"
+    getUserInUse == undefined ||
+    getUserInUse == null ||
+    getUserInUse == "undefined" ||
+    getUserInUse == "null"
   ) {
     btn1.forEach((e) => {
       tampilSembunyikan([btnUserSetting], [], [e], []);
@@ -279,21 +278,28 @@ function cekUser() {
     return;
   }
 
-  const newawakwjak = JSON.parse(assasaas);
-  accountMenu(ssssas);
+
+  const parseUserInUse = JSON.parse(getUserInUse);
+  accountMenu(getUsersData);
+
+
+
   const avatar3 = document.querySelectorAll(".avatar3");
   avatar3.forEach((e, i) => {
     e.addEventListener("click", function () {
       const buttonCek = document.querySelector(".loading3");
       loading("", buttonCek);
       setTimeout(() => {
-        localStorage.setItem("userNow", JSON.stringify(ssssas[i]));
-        accountName.textContent = ssssas[i].username;
+        localStorage.setItem("userNow", JSON.stringify(getUsersData[i]));
+        accountName.textContent = getUsersData[i].username;
         pesanErrSucc("berhasil ganti akun", "80px", "");
       }, 2000);
     });
   });
-  accountName.textContent = newawakwjak.username;
+
+
+  
+  accountName.textContent = parseUserInUse.username;
   btn1.forEach((e) => {
     tampilSembunyikan(
       [mainRegister.parentElement, e],
